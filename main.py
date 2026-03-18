@@ -14,6 +14,9 @@ async def home(request: Request):
 async def generate_report(numbers: str = Form(...)):
     # numbers — это текст из textarea
     input_data = numbers.split()
+
+    # Очищаем предыдущие данные
+    UserData.clear()
     
     # Добавляем данные как в телеграм-боте
     response = UserData.add_data(input_data)
