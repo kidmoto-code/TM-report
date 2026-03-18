@@ -2,9 +2,51 @@
 <html>
 <head>
     <title>Проверка товарных знаков</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            text-align: center;
+            width: 600px;
+        }
+        textarea {
+            width: 100%;
+            height: 200px;
+            padding: 10px;
+            margin: 20px 0;
+            font-family: monospace;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 30px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
 </head>
 <body>
-    <h1>Отчет по товарным знакам</h1>
-    <p>Введите номера (как в Telegram)</p>
+    <div class="container">
+        <h1>Проверка товарных знаков</h1>
+        <form action="/generate" method="post">
+            <textarea name="numbers" placeholder="Введите номера ТЗ, заявок, классов МКТУ (как в Telegram)"></textarea>
+            <br>
+            <button type="submit">Сформировать отчет</button>
+        </form>
+    </div>
 </body>
 </html>
