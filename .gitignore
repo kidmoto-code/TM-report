@@ -2,11 +2,12 @@ venv/
 __pycache__/
 Logs/
 Patterns/
+images/
 
 .py[cod]
 test.py
 config.py
 temp.txt
 img.jpg
-temp.docx
+report.docx
 *.swp
