@@ -37,16 +37,110 @@
         button:hover {
             background-color: #45a049;
         }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        
+        .spinner {
+            display: none;
+            margin: 20px auto;
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3CAF50;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            display: none;
+            color: #666;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+    
+        .success-message {
+            display: none;
+            color: #4CAF50;
+            margin-top: 10px;
+            font-size: 14px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Проверка товарных знаков</h1>
-        <form action="/generate" method="post">
-            <textarea name="numbers" placeholder="Введите номера ТЗ, заявок, классов МКТУ (как в Telegram)"></textarea>
+        <form id="reportForm" action="/generate" method="post">
+            <textarea name="numbers" placeholder="Введите номера ТЗ, заявок, классов МКТУ (как в Telegram)" required></textarea>
             <br>
-            <button type="submit">Сформировать отчет</button>
+            <button type="submit" id="submitBtn">Сформировать отчет</button>
         </form>
+        <div class="spinner" id="spinner"></div>
+        <div class="loading-text" id="loadingText">Патентую бренды :-Р , не переключайтесь...</div>
+        <div class="success-message" id="successMessage">Отчет готов, проверяйте!</div>
+
+        <script>
+            document.getElementById('reportForm').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                var spinner = document.getElementById('spinner');
+                var loadingText = document.getElementById('loadingText');
+                var successMessage = document.getElementById('successMessage');
+                var btn = document.getElementById('submitBtn');
+                
+                // Показываем загрузку
+                spinner.style.display = 'block';
+                loadingText.style.display = 'block';
+                successMessage.style.display = 'none';
+                btn.disabled = true;
+                btn.textContent = 'Формирование отчета...';
+                
+                try {
+                    const formData = new FormData(this);
+                    const response = await fetch('/generate', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    if (!response.ok) throw new Error('Ошибка сервера');
+                    
+                    // Файл готов — скачиваем
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'report.docx';
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+                    
+                    // Показываем успех
+                    spinner.style.display = 'none';
+                    loadingText.style.display = 'none';
+                    successMessage.style.display = 'block';
+                    
+                } catch (error) {
+                    alert('Ошибка при формировании отчета: ' + error.message);
+                    spinner.style.display = 'none';
+                    loadingText.style.display = 'none';
+                } finally {
+                    btn.disabled = false;
+                    btn.textContent = 'Сформировать отчет';
+                }
+            });
+
+            document.querySelector('textarea').addEventListener('focus', function() {
+                document.getElementById('successMessage').style.display = 'none';
+            });
+        </script>
     </div>
 </body>
 </html>
