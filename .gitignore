@@ -8,6 +8,6 @@ images/
 test.py
 config.py
 temp.txt
-img.jpg
+*.jpg
 report.docx
 *.swp
