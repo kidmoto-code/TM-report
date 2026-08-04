@@ -6,7 +6,7 @@ from functools import wraps
 from typing import Optional, Tuple, List, Dict, Any
 
 
-def retry(attempts: int = 3, delay: int = 6):
+def retry(attempts: int = 5, delay: int = 9):
     """
     Декоратор для повторного выполнения функции при возникновении ошибок.
 
@@ -54,7 +54,7 @@ class GetHTML:
         """Формирует URL для запроса к ФИПС."""
         return f'https://www1.fips.ru/registers-doc-view/fips_servlet?DB=RU{self.casetype}&DocNumber={self.number}&TypeFile=html'
 
-    @retry(attempts=3, delay=6)
+    @retry(attempts=5, delay=9)
     def get_response(self, url: str) -> requests.models.Response:
         """
         Выполняет GET-запрос к указанному URL.
