@@ -83,10 +83,19 @@
             <button type="submit" id="submitBtn">Сформировать отчет</button>
         </form>
         <div class="spinner" id="spinner"></div>
-        <div class="loading-text" id="loadingText">Патентую бренды :-Р , не переключайтесь...</div>
+        <div class="loading-text" id="loadingText"></div>
         <div class="success-message" id="successMessage">Отчет готов, проверяйте!</div>
 
         <script>
+            // Список фраз из сервера
+            const messages = {{ messages|tojson }};
+            
+            // Функция для случайного выбора фразы
+            function getRandomMessage() {
+                return messages[Math.floor(Math.random() * messages.length)];
+            }
+            document.getElementById('loadingText').textContent = getRandomMessage();
+
             document.getElementById('reportForm').addEventListener('submit', async function(e) {
                 e.preventDefault();
                 
@@ -97,6 +106,7 @@
                 
                 // Показываем загрузку
                 spinner.style.display = 'block';
+                loadingText.textContent = getRandomMessage();
                 loadingText.style.display = 'block';
                 successMessage.style.display = 'none';
                 btn.disabled = true;
