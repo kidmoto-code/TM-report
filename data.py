@@ -1,6 +1,7 @@
 import os
 import time
 import requests
+from loguru import logger
 from bs4 import BeautifulSoup as BS
 from functools import wraps
 from typing import Optional, Tuple, List, Dict, Any
@@ -71,7 +72,7 @@ class GetHTML:
         return BS(response.content, 'html.parser')
 
 
-    @retry(attempts=3, delay=5)
+    @retry(attempts=5, delay=9)
     def _initialize(self) -> None:
         """Инициализация объекта с обработкой ошибок."""
         self.url = self.get_url()
@@ -169,6 +170,8 @@ class TradeMark(GetHTML):
 
     def _get_applicationdate(self) -> Optional[str]:
         """Извлекает дату подачи заявки."""
+
+        # logger.info(f"Вошли в _get_applicationdate для {self.number}")
         for info in self._soup.find('td', id='BibR').find_all('p'):
             if '(220)' in info.text:
                 return info.text.strip()[26:].split('\n')[0].strip()
@@ -199,6 +202,8 @@ class TradeMark(GetHTML):
 
     def _get_MKTU(self) -> Tuple[List[str], List[str]]:
         """Извлекает классы МКТУ и их номера."""
+        # logger.info(f"Вошли в _get_MKTU для {self.number}")
+
         classes = []
         classes_numbers = []
 
@@ -223,6 +228,8 @@ class TradeMark(GetHTML):
 
     def _get_validity(self) -> Optional[str]:
         """Извлекает дату истечения срока действия."""
+        logger.info(f"Вошли в _get_validity для {self.number}")
+
         validity_list = []
 
         for info in self._soup.find_all('p', class_='bib'):
